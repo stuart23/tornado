@@ -9,5 +9,5 @@ private:
   bool loadFile(std::string filename);
   
   std::string filename; //Imported step filename
-  //STEPControl_Reader reader; //Open Cascade Step file reader
+  STEPControl_Reader reader; //Open Cascade Step file reader
 };
