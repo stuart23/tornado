@@ -5,12 +5,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/stuart/projects/tornado/main.cxx" "/home/stuart/projects/tornado/build/CMakeFiles/tornado.dir/main.cxx.o"
-  "/home/stuart/projects/tornado/step.cxx" "/home/stuart/projects/tornado/build/CMakeFiles/tornado.dir/step.cxx.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/local/include/opencascade"
   )
 
 # Targets to which this target links.

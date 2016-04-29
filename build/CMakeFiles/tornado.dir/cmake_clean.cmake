@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/tornado.dir/step.cxx.o"
   "CMakeFiles/tornado.dir/main.cxx.o"
   "tornado.pdb"
   "tornado"
