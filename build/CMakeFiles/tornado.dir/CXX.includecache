@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/stuart/projects/tornado/geometry.cpp
+geometry.h
+/home/stuart/projects/tornado/geometry.h
+
+/home/stuart/projects/tornado/geometry.h
+iostream
+-
+array
+-
+
+/home/stuart/projects/tornado/main.cpp
+iostream
+-
+geometry.h
+/home/stuart/projects/tornado/geometry.h
+
+/home/stuart/projects/tornado/state.cpp
+state.h
+/home/stuart/projects/tornado/state.h
+
+/home/stuart/projects/tornado/state.h
+

@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/tornado.dir/state.cpp.o CMakeFiles/tornado.dir/geometry.cpp.o CMakeFiles/tornado.dir/main.cpp.o  -o tornado -rdynamic 
