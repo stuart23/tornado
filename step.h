@@ -1,4 +1,5 @@
 #include "iostream"
+#include "opencascade/STEPControl_Reader.hxx"
 
 class Step
 {
