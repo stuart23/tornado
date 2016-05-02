@@ -3,11 +3,14 @@
 #include "unistd.h"
 #include "iostream"
 #include "string"
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
 
 Step::Step(std::string input_filename)
 {
   filename = input_filename;
   loadFile(filename);
+  std::cout << getXExtents(shapes[0])[0];
 }
 
 bool Step::loadFile(std::string filename)
@@ -30,7 +33,8 @@ bool Step::loadFile(std::string filename)
   {
     if ( reader.Shape(i).ShapeType() == TopAbs_SOLID )
     {
-      shapes.push_back(reader.Shape(i));
+      shapes.push_back(reader.Shape(i))
+      ;
     }
     else
     {
@@ -38,4 +42,18 @@ bool Step::loadFile(std::string filename)
     }
   }
   std::cout << "Translated " << shapes.size() << " solids. Ignored " << num_non_solids << " non-solids.\n";
+}
+
+std::array<float, 6> Step::getExtents(TopoDS_Shape the_shape)
+{
+  Standard_Real xmin, ymin, zmin, xmax, ymax, zmax; 
+  Bnd_Box B;
+  BRepBndLib::Add(the_shape, B);
+  B.Get(*&xmin, *&ymin, *&zmin, *&xmax, *&ymax, *&zmax);
+  return std::array<float, 6>{(float) xmin, (float) ymin, (float) zmin, (float) xmax, (float) ymax, (float) zmax};
+}
+
+std::array<float, 2> Step::getXExtents(TopoDS_Shape the_shape)
+{
+  return std::array<float, 2>{getExtents(the_shape)[0], getExtents(the_shape)[3]};
 }
