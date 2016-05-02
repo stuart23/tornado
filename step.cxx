@@ -24,11 +24,18 @@ bool Step::loadFile(std::string filename)
   }
 
   reader.TransferRoot();
-  std::cout << "Step file contains " << reader.NbShapes() << " shapes.\n";	
+  std::cout << "Step file contains " << reader.NbShapes() << " shapes.\n";
+  int num_non_solids = 0;
   for (int i = 1; i < reader.NbShapes() + 1; i++)
   {
-    shapes.push_back(reader.Shape(i));
+    if ( reader.Shape(i).ShapeType() == TopAbs_SOLID )
+    {
+      shapes.push_back(reader.Shape(i));
+    }
+    else
+    {
+      num_non_solids++;
+    }
   }
-  
-  std::cout << "read";
+  std::cout << "Translated " << shapes.size() << " solids. Ignored " << num_non_solids << " non-solids.\n";
 }
