@@ -8,6 +8,8 @@ public:
   Step(std::string input_filename);
   std::vector<TopoDS_Shape> shapes;
   std::array<float, 2> getXExtents(TopoDS_Shape the_shape);
+  std::array<float, 2> getYExtents(TopoDS_Shape the_shape);
+  std::array<float, 2> getZExtents(TopoDS_Shape the_shape);
   
 private:
   bool loadFile(std::string filename);

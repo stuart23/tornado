@@ -10,7 +10,6 @@ Step::Step(std::string input_filename)
 {
   filename = input_filename;
   loadFile(filename);
-  std::cout << getXExtents(shapes[0])[0];
 }
 
 bool Step::loadFile(std::string filename)
@@ -56,4 +55,14 @@ std::array<float, 6> Step::getExtents(TopoDS_Shape the_shape)
 std::array<float, 2> Step::getXExtents(TopoDS_Shape the_shape)
 {
   return std::array<float, 2>{getExtents(the_shape)[0], getExtents(the_shape)[3]};
+}
+
+std::array<float, 2> Step::getYExtents(TopoDS_Shape the_shape)
+{
+  return std::array<float, 2>{getExtents(the_shape)[1], getExtents(the_shape)[4]};
+}
+
+std::array<float, 2> Step::getZExtents(TopoDS_Shape the_shape)
+{
+  return std::array<float, 2>{getExtents(the_shape)[2], getExtents(the_shape)[5]};
 }
