@@ -16,6 +16,19 @@ bool Step::loadFile(std::string filename)
   { 
     throw std::invalid_argument( "File is not readable" );
   }
+  
   IFSelect_ReturnStatus stat = reader.ReadFile(filename.c_str() ); 
-  std::cout << reader.NbShapes();
+  if ( stat != 1 )
+  {
+    throw std::invalid_argument( "Step file transfer failed" );
+  }
+
+  reader.TransferRoot();
+  std::cout << "Step file contains " << reader.NbShapes() << " shapes.\n";	
+  for (int i = 1; i < reader.NbShapes() + 1; i++)
+  {
+    shapes.push_back(reader.Shape(i));
+  }
+  
+  std::cout << "read";
 }

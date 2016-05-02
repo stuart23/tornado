@@ -4,7 +4,6 @@ project(tornado)
 add_executable(tornado geometry.cxx state.cxx step.cxx main.cxx)
 
 find_package(OpenCASCADE REQUIRED)
-message(${OpenCASCADE_LIBRARIES})
 target_link_libraries(tornado ${OpenCASCADE_LIBRARIES})
 include_directories(${OpenCASCADE_INCLUDE_DIR})
 
