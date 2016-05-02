@@ -7,7 +7,7 @@ Geometry::Geometry()
   nx=1;                
   fsym=0;              
   fc=0.0;                
-  flapped=0;         
+  control_surfaces=0;         
   tw=0;         
   foil=0.0;   
   T=1.0;                 
