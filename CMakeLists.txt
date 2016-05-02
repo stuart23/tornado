@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(tornado)
 
-add_executable(tornado geometry.cxx state.cxx step.cxx main.cxx)
+add_executable(tornado geometry.cxx state.cxx step.cxx mesh.cxx main.cxx)
 
 find_package(OpenCASCADE REQUIRED)
 target_link_libraries(tornado ${OpenCASCADE_LIBRARIES})
