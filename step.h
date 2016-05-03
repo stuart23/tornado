@@ -1,6 +1,7 @@
 #include "iostream"
 #include <vector>
 #include "opencascade/STEPControl_Reader.hxx"
+#include <array>
 
 class Step
 {
