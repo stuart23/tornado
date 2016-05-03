@@ -30,8 +30,29 @@ void Vtk::AddLine(std::array<float, 3> point1, std::array<float, 3> point2)
   AddLine(&point1[0], &point2[0]);
 }
 
+void Vtk::AddProfile(std::vector<std::array<double, 3>> profile)
+{
+  std::vector<vtkIdType> point_ids;
+  
+  for (std::array<double, 3> profile_point : profile)
+  {
+    point_ids.push_back(points->InsertNextPoint(profile_point[0],profile_point[1],profile_point[2]));
+    //cout << "X " << profile_point[0] << " Y " << profile_point[1] << " Z " << profile_point[2] << "\n";
+  }
+  cout << "array size: " << point_ids.size() << "\n";
+  for (int index = 1; index < point_ids.size(); index++)
+  {
+    vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0, point_ids[index - 1]);
+    line->GetPointIds()->SetId(1, point_ids[index]);
+    //cout << "index1 " << point_ids[index - 1] << " index2 " << point_ids[index] << "\n";
+    lines->InsertNextCell(line);
+  } 
+}
+
 bool Vtk::WriteFile(std::string output_filename)
 {
+  polydata->SetPoints(points);
   polydata->SetLines(lines);
   writer->SetFileName(output_filename.c_str());
   writer->SetInputData(polydata);

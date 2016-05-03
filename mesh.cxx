@@ -8,10 +8,18 @@
 #include <ShapeAnalysis_FreeBounds.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
+#include <BRepAdaptor_CompCurve.hxx>
+#include <gp_Pnt.hxx>
 
+Mesh::Mesh(TopoDS_Shape input_wing)
+{
+  wing = input_wing;
+  createProfiles(30);
+}
 
-Mesh::Mesh(TopoDS_Shape wing, int spanwise_divisions)
+void Mesh::createProfiles(int spanwise_divisions)
 {
   std::array<float, 2> y_extents = Step::getYExtents(wing);
   std::vector<BRepAlgoAPI_Section> sections;
@@ -31,7 +39,19 @@ Mesh::Mesh(TopoDS_Shape wing, int spanwise_divisions)
     }
     ShapeAnalysis_FreeBounds::ConnectEdgesToWires(edges, Precision::Confusion(), Standard_False, wires);
     
-    std::cout << "Done";
-
+    if ( wires->Length() > 0 )
+    {
+      TopoDS_Wire first_wire = TopoDS::Wire(wires->Value(1));
+      BRepAdaptor_CompCurve comp_curve = BRepAdaptor_CompCurve(first_wire, Standard_False);
+      gp_Pnt point;
+      std::vector<std::array<double, 3>> profile;
+      float chord_divisions = 50;
+      for (float param = comp_curve.FirstParameter(); param <= comp_curve.LastParameter(); param += (comp_curve.LastParameter() - comp_curve.FirstParameter()) / chord_divisions)
+      {
+	comp_curve.D0(param, point);
+	profile.push_back({point.X(), point.Y(), point.Z()});
+      }
+      profiles.push_back(profile);
+    }
   }
 }
