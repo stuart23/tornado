@@ -7,6 +7,10 @@ find_package(OpenCASCADE REQUIRED)
 target_link_libraries(tornado ${OpenCASCADE_LIBRARIES})
 include_directories(${OpenCASCADE_INCLUDE_DIR})
 
+find_package(Armadillo REQUIRED)
+target_link_libraries(tornado ${Armadillo_LIBRARIES})
+include_directories(${Armadillo_INCLUDE_DIR})
+
 find_package(VTK REQUIRED)
 target_link_libraries(tornado ${VTK_LIBRARIES})
 include_directories(${VTK_INCLUDE_DIRS})
