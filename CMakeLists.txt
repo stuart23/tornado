@@ -12,7 +12,9 @@ target_link_libraries(tornado ${VTK_LIBRARIES})
 include_directories(${VTK_INCLUDE_DIRS})
 include(${VTK_USE_FILE})
 
-message("${VTK_LIBRARIES}")
+find_package(Boost REQUIRED) 
+include_directories(${Boost_INCLUDE_DIRS}) 
+target_link_libraries(tornado ${Boost_LIBRARIES})
 
 target_compile_features(tornado PRIVATE cxx_range_for)
 

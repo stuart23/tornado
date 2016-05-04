@@ -14,10 +14,11 @@ int main(int argc, char **argv) {
   Vtk c = Vtk();
   
   
-  for ( std::vector<std::array<double, 3>> profile : b.profiles)
+
+  /*for ( std::vector<std::array<double, 3>> profile : b.profiles)
     c.AddProfile(profile);
   
   c.WriteFile(std::string("My_vtk.vtp"));
-  
+  */
   return 0;
 }
