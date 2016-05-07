@@ -1,5 +1,7 @@
 #include "iostream"
 #include "opencascade/STEPControl_Reader.hxx"
+#include <BRepAdaptor_CompCurve.hxx>
+#include <gp_Pnt.hxx>
 #include <armadillo>
 
 class Mesh
@@ -14,4 +16,7 @@ public:
   std::vector<std::array<std::array<double, 3>, 4>> quads;
   int spanwise_divisions;
   int chord_divisions;
+  
+private:
+  gp_Pnt getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve);
 };

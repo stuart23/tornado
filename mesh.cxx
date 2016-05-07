@@ -10,14 +10,12 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
-#include <BRepAdaptor_CompCurve.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 
 Mesh::Mesh(TopoDS_Shape input_wing)
 {
   wing = input_wing;
-  createProfiles(4, 4);
+  createProfiles(15, 15);
 }
 
 void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_divisions)
@@ -50,31 +48,10 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
     {
       TopoDS_Wire first_wire = TopoDS::Wire(wires->Value(1));
       BRepAdaptor_CompCurve comp_curve = BRepAdaptor_CompCurve(first_wire, Standard_False);
-      gp_Pnt point1, point2;
-      gp_Vec tangent1, tangent2;
       
-      // Bisection for leading edge
-   
-    std::cout << "Bisecting";   
-      double parameter_value = comp_curve.FirstParameter();
-      double tolerance = 0.01;
-      double step = 0.1;
-      while ( true )
-      {
-	comp_curve.D1(parameter_value, point1, tangent1);
-	std::cout << "X " << point1.X() << " Y " << point1.Y() << " Z " << point1.Z() << " parameter " << parameter_value << " step " << step << "\n";
-	comp_curve.D1(parameter_value + step, point2, tangent2);
-	std::cout << tangent1.Y() << "\n";
-	if ( abs(tangent1.Y()) < tolerance )
-	  break;
-	else if ( tangent1.X() * tangent2.X() < 0 )
-	  step /= 2;
-	else if ( point2.X() < point1.X())
-	  step *= -1;
-	else
-	  parameter_value += step;
-      }
-	
+      gp_Pnt leading_edge = getCurveLeadingEdge(comp_curve);
+      gp_Pnt point1;
+      
       double delta_chord_parameter = (comp_curve.LastParameter() - comp_curve.FirstParameter()) / chord_divisions;
       double chord_location = comp_curve.FirstParameter();
       
@@ -91,6 +68,50 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
     }
     y_location += delta_y;
   }
+}
+
+gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
+{
+  /**<
+   * Gives the point at maximum X along a curve using a
+   * modified bisection method. This point is essentially
+   * the leading edge of the airfoil.
+   * 
+   * By starting at an arbitary point, a second point is
+   * created by moving along the curve by the step value.
+   * With these two points, if the second point has a higher
+   * X value, it becomes the new base point for the next 
+   * iteration. If the tangent vector of the first point is
+   * in positive X, and the tangent vector of the second 
+   * point is in negative X (or vice-versa), then the X max 
+   * point has been overshot, so the step is halved, 
+   * bringing the second point closer to the first. If the
+   * second point has a lower X value than the first, the
+   * wrong direction is being searched, so the step value is
+   * multiplied by -1.
+   */
+  
+  double parameter_value = comp_curve.FirstParameter();
+  gp_Pnt point1, point2;
+  gp_Vec tangent1, tangent2;
+   
+  double tolerance = 0.0001;
+  double step = 0.1;
+  while ( step > tolerance )
+  {
+    comp_curve.D1(parameter_value, point1, tangent1);
+    comp_curve.D1(parameter_value + step, point2, tangent2);
+    //std::cout << tangent1.Z() << "\n";
+    if ( tangent1.X() * tangent2.X() < 0 )
+      step /= 2;
+    else if ( point2.X() < point1.X())
+      step *= -1;
+    else
+      parameter_value += step;
+  }
+  std::cout << "X " << point1.X() << " Y " << point1.Y() << " Z " << point1.Z() << " parameter " << parameter_value << " step " << step << "\n";
+    
+  return point1;
 }
 
 void Mesh::createQuads()
