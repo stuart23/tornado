@@ -2,6 +2,7 @@
 #include "step.h"
 #include "mesh.h"
 #include "vtk.h"
+#include <armadillo>
 
 int main(int argc, char **argv) {
   if ( argc != 2 )
@@ -15,10 +16,10 @@ int main(int argc, char **argv) {
   
   
 
-  /*for ( std::vector<std::array<double, 3>> profile : b.profiles)
+  for ( arma::Matrix profile : b.profiles)
     c.AddProfile(profile);
   
   c.WriteFile(std::string("My_vtk.vtp"));
-  */
+  
   return 0;
 }
