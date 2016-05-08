@@ -16,8 +16,11 @@ int main(int argc, char **argv) {
   
   
 
-  for ( arma::Matrix profile : b.profiles)
+  for ( int index = 0; index < b.profiles.n_slices; index++ )
+  {
+    arma::mat profile = b.profiles.slice(index);
     c.AddProfile(profile);
+  }
   
   c.WriteFile(std::string("My_vtk.vtp"));
   
