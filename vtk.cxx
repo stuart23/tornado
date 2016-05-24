@@ -1,6 +1,7 @@
 #include "vtk.h"
 #include "iostream"
 #include "vtkLine.h"
+#include <armadillo>
 
 Vtk::Vtk()
 {
@@ -30,10 +31,10 @@ void Vtk::AddLine(std::array<float, 3> point1, std::array<float, 3> point2)
   AddLine(&point1[0], &point2[0]);
 }
 
-void Vtk::AddProfile(std::vector<std::array<double, 3>> profile)
+void Vtk::AddProfile(arma::mat profile)
 {
   std::vector<vtkIdType> point_ids;
-  
+  /*
   for (std::array<double, 3> profile_point : profile)
   {
     point_ids.push_back(points->InsertNextPoint(profile_point[0],profile_point[1],profile_point[2]));
@@ -48,6 +49,7 @@ void Vtk::AddProfile(std::vector<std::array<double, 3>> profile)
     //cout << "index1 " << point_ids[index - 1] << " index2 " << point_ids[index] << "\n";
     lines->InsertNextCell(line);
   } 
+  */
 }
 
 bool Vtk::WriteFile(std::string output_filename)
