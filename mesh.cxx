@@ -23,7 +23,7 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
   spanwise_divisions = input_spanwise_divisions;
   chord_divisions = input_chord_divisions;
   
-  arma::Cube<double> profiles(spanwise_divisions + 1, chord_divisions, 3);
+  profiles.reshape(spanwise_divisions + 1, chord_divisions, 3);
   std::array<float, 2> y_extents = Step::getYExtents(wing);
   std::vector<BRepAlgoAPI_Section> sections;
   

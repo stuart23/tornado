@@ -12,7 +12,7 @@ public:
   void createQuads();
   
   TopoDS_Shape wing;
-  arma::Cube<double> profiles();
+  arma::Cube<double> profiles;
   std::vector<std::array<std::array<double, 3>, 4>> quads;
   int spanwise_divisions;
   int chord_divisions;
