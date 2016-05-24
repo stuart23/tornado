@@ -15,7 +15,7 @@
 Mesh::Mesh(TopoDS_Shape input_wing)
 {
   wing = input_wing;
-  createProfiles(15, 15);
+  createProfiles(20, 15);
 }
 
 void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_divisions)
@@ -23,7 +23,7 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
   spanwise_divisions = input_spanwise_divisions;
   chord_divisions = input_chord_divisions;
   
-  profiles.reshape(spanwise_divisions + 1, chord_divisions, 3);
+  profiles.reshape(3, chord_divisions, spanwise_divisions + 1);
   std::array<float, 2> y_extents = Step::getYExtents(wing);
   std::vector<BRepAlgoAPI_Section> sections;
   
@@ -60,9 +60,9 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
       {
 	comp_curve.D0(chord_location, point1);
 	// Theres probably a better way to do this!!!
-	profiles(span_step, chord_step, 0) = (double) point1.X();
-	profiles(span_step, chord_step, 1) = (double) point1.Y();
-	profiles(span_step, chord_step, 2) = (double) point1.Z();
+	profiles(0, chord_step, span_step) = (double) point1.X();
+	profiles(1, chord_step, span_step) = (double) point1.Y();
+	profiles(2, chord_step, span_step) = (double) point1.Z();
 	chord_location += delta_chord_parameter;
       }
     }
