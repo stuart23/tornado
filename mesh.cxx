@@ -11,6 +11,7 @@
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Edge.hxx>
 #include <gp_Vec.hxx>
+#include <Standard_Macro.hxx>
 
 Mesh::Mesh(TopoDS_Shape input_wing)
 {
@@ -49,10 +50,14 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
       TopoDS_Wire first_wire = TopoDS::Wire(wires->Value(1));
       BRepAdaptor_CompCurve comp_curve = BRepAdaptor_CompCurve(first_wire, Standard_False);
       
-      gp_Pnt leading_edge = getCurveLeadingEdge(comp_curve);
-      gp_Pnt trailing_edge = getCurveTrailingEdge(comp_curve);
-      std::cout << "LE X " << leading_edge.X() << " Y " << leading_edge.Y() << " Z " << leading_edge.Z() << "\n";
-      std::cout << "TE X " << trailing_edge.X() << " Y " << trailing_edge.Y() << " Z " << trailing_edge.Z() << "\n";
+      double leading_edge = getCurveLeadingEdge(comp_curve);
+      double trailing_edge = getCurveTrailingEdge(comp_curve);
+      
+      Handle(Adaptor3d_HCurve) curve1 = comp_curve.Trim(leading_edge, trailing_edge, 0.1);
+      Adaptor3d_HCurve comp_curve = *curve1;
+      //std::cout << comp_curve.FirstParameter() << " " << comp_curve.LastParameter() << "\n";
+      // I need to try with a 4 patch wing section to see if I can still get LE and TE
+      
       gp_Pnt point1;
       
       double delta_chord_parameter = (comp_curve.LastParameter() - comp_curve.FirstParameter()) / chord_divisions;
@@ -73,12 +78,12 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
   }
 }
 
-gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
+double Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
 {
   /**<
-   * Gives the point at maximum X along a curve using a
-   * modified bisection method. This point is essentially
-   * the leading edge of the airfoil.
+   * Gives the parameter of the point at maximum X along a 
+   * curve using a modified bisection method. This point is 
+   * essentially the leading edge of the airfoil.
    * 
    * By starting at an arbitary point, a second point is
    * created by moving along the curve by the step value.
@@ -104,7 +109,6 @@ gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
   {
     comp_curve.D1(parameter_value, point1, tangent1);
     comp_curve.D1(parameter_value + step, point2, tangent2);
-    std::cout << parameter_value << " " << tangent1.X() << " " << tangent2.X() << " " << step << "\n";
     if ( tangent1.X() * tangent2.X() < 0 )
       step /= 2;
     else if ( point2.X() < point1.X())
@@ -112,16 +116,15 @@ gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
     else
       parameter_value += step;
   }
-    
-  return point1;
+  return parameter_value;
 }
 
-gp_Pnt Mesh::getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve)
+double Mesh::getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve)
 {
   /**<
-   * Gives the point at minimum X along a curve using a
-   * modified bisection method. This point is essentially
-   * the trailing edge of the airfoil.
+   * Gives the parameter of the point at minimum X along a 
+   * curve using a modified bisection method. This point is 
+   * essentially the trailing edge of the airfoil.
    * 
    * By starting at an arbitary point, a second point is
    * created by moving along the curve by the step value.
@@ -154,8 +157,7 @@ gp_Pnt Mesh::getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve)
     else
       parameter_value += step;
   }
-    
-  return point1;
+  return parameter_value;
 }
 
 void Mesh::createQuads()

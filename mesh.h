@@ -3,6 +3,7 @@
 #include <BRepAdaptor_CompCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <armadillo>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 
 class Mesh
 {
@@ -18,6 +19,6 @@ public:
   int chord_divisions;
   
 private:
-  gp_Pnt getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve);
-  gp_Pnt getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve);
+  double getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve);
+  double getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve);
 };
