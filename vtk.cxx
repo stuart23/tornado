@@ -9,8 +9,6 @@ Vtk::Vtk()
   polydata = vtkSmartPointer<vtkPolyData>::New();
   points = vtkSmartPointer<vtkPoints>::New();
   lines = vtkSmartPointer<vtkCellArray>::New();
-  
-  std::cout << "DONE";
 }
 
 void Vtk::AddLine(float* point1, float* point2)
@@ -34,13 +32,13 @@ void Vtk::AddLine(std::array<float, 3> point1, std::array<float, 3> point2)
 void Vtk::AddProfile(arma::mat profile)
 {
   std::vector<vtkIdType> point_ids;
-  /*
-  for (std::array<double, 3> profile_point : profile)
-  {
-    point_ids.push_back(points->InsertNextPoint(profile_point[0],profile_point[1],profile_point[2]));
-    //cout << "X " << profile_point[0] << " Y " << profile_point[1] << " Z " << profile_point[2] << "\n";
+  
+  for (int i = 0; i < profile.n_cols; ++i) {
+    point_ids.push_back(points->InsertNextPoint(profile(0,i),profile(1,i),profile(2,i)));
+    //cout << "X " << profile(0,i) << " Y " << profile(1,i) << " Z " << profile(2,i) << "\n";
   }
-  cout << "array size: " << point_ids.size() << "\n";
+  
+  //cout << "array size: " << point_ids.size() << "\n";
   for (int index = 1; index < point_ids.size(); index++)
   {
     vtkSmartPointer<vtkLine> line = vtkSmartPointer<vtkLine>::New();
@@ -49,7 +47,7 @@ void Vtk::AddProfile(arma::mat profile)
     //cout << "index1 " << point_ids[index - 1] << " index2 " << point_ids[index] << "\n";
     lines->InsertNextCell(line);
   } 
-  */
+  
 }
 
 bool Vtk::WriteFile(std::string output_filename)
@@ -60,5 +58,6 @@ bool Vtk::WriteFile(std::string output_filename)
   writer->SetInputData(polydata);
   writer->Write();
   
+  std::cout << "File written to: " << output_filename << "\n"; 
   return true;
 }

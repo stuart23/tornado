@@ -109,7 +109,7 @@ gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
     else
       parameter_value += step;
   }
-  std::cout << "X " << point1.X() << " Y " << point1.Y() << " Z " << point1.Z() << " parameter " << parameter_value << " step " << step << "\n";
+  //std::cout << "X " << point1.X() << " Y " << point1.Y() << " Z " << point1.Z() << " parameter " << parameter_value << " step " << step << "\n";
     
   return point1;
 }
