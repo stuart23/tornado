@@ -50,6 +50,9 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
       BRepAdaptor_CompCurve comp_curve = BRepAdaptor_CompCurve(first_wire, Standard_False);
       
       gp_Pnt leading_edge = getCurveLeadingEdge(comp_curve);
+      gp_Pnt trailing_edge = getCurveTrailingEdge(comp_curve);
+      std::cout << "LE X " << leading_edge.X() << " Y " << leading_edge.Y() << " Z " << leading_edge.Z() << "\n";
+      std::cout << "TE X " << trailing_edge.X() << " Y " << trailing_edge.Y() << " Z " << trailing_edge.Z() << "\n";
       gp_Pnt point1;
       
       double delta_chord_parameter = (comp_curve.LastParameter() - comp_curve.FirstParameter()) / chord_divisions;
@@ -101,7 +104,7 @@ gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
   {
     comp_curve.D1(parameter_value, point1, tangent1);
     comp_curve.D1(parameter_value + step, point2, tangent2);
-    //std::cout << tangent1.Z() << "\n";
+    std::cout << parameter_value << " " << tangent1.X() << " " << tangent2.X() << " " << step << "\n";
     if ( tangent1.X() * tangent2.X() < 0 )
       step /= 2;
     else if ( point2.X() < point1.X())
@@ -109,7 +112,48 @@ gp_Pnt Mesh::getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve)
     else
       parameter_value += step;
   }
-  //std::cout << "X " << point1.X() << " Y " << point1.Y() << " Z " << point1.Z() << " parameter " << parameter_value << " step " << step << "\n";
+    
+  return point1;
+}
+
+gp_Pnt Mesh::getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve)
+{
+  /**<
+   * Gives the point at minimum X along a curve using a
+   * modified bisection method. This point is essentially
+   * the trailing edge of the airfoil.
+   * 
+   * By starting at an arbitary point, a second point is
+   * created by moving along the curve by the step value.
+   * With these two points, if the second point has a lower
+   * X value, it becomes the new base point for the next 
+   * iteration. If the tangent vector of the first point is
+   * in positive X, and the tangent vector of the second 
+   * point is in negative X (or vice-versa), then the X max 
+   * point has been overshot, so the step is halved, 
+   * bringing the second point closer to the first. If the
+   * second point has a lower X value than the first, the
+   * wrong direction is being searched, so the step value is
+   * multiplied by -1.
+   */
+  
+  double parameter_value = comp_curve.FirstParameter();
+  gp_Pnt point1, point2;
+  gp_Vec tangent1, tangent2;
+   
+  double tolerance = 0.0001;
+  double step = 0.1;
+  while ( step > tolerance )
+  {
+    comp_curve.D1(parameter_value, point1, tangent1);
+    comp_curve.D1(parameter_value + step, point2, tangent2);
+    if ( tangent1.X() * tangent2.X() < 0 )
+      step /= 2;
+    else if ( point2.X() > point1.X())
+      step *= -1;
+    else
+      parameter_value += step;
+  }
     
   return point1;
 }

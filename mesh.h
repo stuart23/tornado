@@ -19,4 +19,5 @@ public:
   
 private:
   gp_Pnt getCurveLeadingEdge(BRepAdaptor_CompCurve comp_curve);
+  gp_Pnt getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve);
 };
