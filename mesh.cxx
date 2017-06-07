@@ -12,6 +12,7 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_Macro.hxx>
+#include "math.h"
 
 Mesh::Mesh(TopoDS_Shape input_wing)
 {
@@ -54,8 +55,8 @@ void Mesh::createProfiles(int input_spanwise_divisions, int input_chord_division
       double trailing_edge = getCurveTrailingEdge(comp_curve);
       
       Handle(Adaptor3d_HCurve) curve1 = comp_curve.Trim(leading_edge, trailing_edge, 0.1);
-      Adaptor3d_HCurve comp_curve = *curve1;
-      //std::cout << comp_curve.FirstParameter() << " " << comp_curve.LastParameter() << "\n";
+
+      std::cout << comp_curve.FirstParameter() << " " << comp_curve.LastParameter() << " " << leading_edge << " " << trailing_edge << "\n";
       // I need to try with a 4 patch wing section to see if I can still get LE and TE
       
       gp_Pnt point1;
@@ -143,20 +144,32 @@ double Mesh::getCurveTrailingEdge(BRepAdaptor_CompCurve comp_curve)
   double parameter_value = comp_curve.FirstParameter();
   gp_Pnt point1, point2;
   gp_Vec tangent1, tangent2;
-   
+
   double tolerance = 0.0001;
   double step = 0.1;
-  while ( step > tolerance )
+  
+  std::cout << step << " " << fabs(step) << " Step\n";
+  while ( fabs(step) > tolerance )
   {
     comp_curve.D1(parameter_value, point1, tangent1);
     comp_curve.D1(parameter_value + step, point2, tangent2);
-    if ( tangent1.X() * tangent2.X() < 0 )
+    if ( (tangent1.X() * tangent1.Z()) * (tangent2.X() * tangent2.Z()) < 0 ) {
+      std::cout << "Subdivision " << (tangent1.X() * tangent1.Z()) << " " << (tangent2.X() * tangent2.Z()) << " " << parameter_value << " " << step << " " << tolerance << "\n";
       step /= 2;
-    else if ( point2.X() > point1.X())
-      step *= -1;
+    }
+    else if ( point2.X() > point1.X() ) {
+      step *= -0.5;
+      std::cout << "X1 " << tangent1.X() << " Y1 " << tangent1.Y() << " Z1 " << tangent1.Z() << " X2 " << tangent2.X() << " Y2 " << tangent2.Y() << " Z2 " << tangent2.Z() << " ";
+      std::cout << "Reversal " << point1.X() << " " << point2.X() << " " << parameter_value << " " << step << " " << tolerance << "\n";
+    }
     else
+    {
+      std::cout << "Step " << parameter_value << " " << step << " " << tolerance << "\n";
       parameter_value += step;
+    //std::cout << parameter_value << " " << step << "\n";
+    }
   }
+  std::cout << "A" << parameter_value << " " << step << "\n";
   return parameter_value;
 }
 
